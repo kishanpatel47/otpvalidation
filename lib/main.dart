@@ -2,21 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: ForgotPassword(),
     );
   }
 }
 
 class ForgotPassword extends StatefulWidget {
+  const ForgotPassword({super.key});
+
   @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
+  State<ForgotPassword> createState() => _ForgotPasswordState();
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
@@ -44,11 +48,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   void verifyOTP() {
     setState(() {
+      isOTPValid = otpText == staticOtp;
       showError = !isOTPValid;
       isButtonClicked = true; // Mark button as clicked
-      if (isOTPValid) {
-        otpText = ""; // Clear the OTP text on successful verification
-      }
     });
   }
 
@@ -56,7 +58,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Forgot Password"),
+        title: const Text("Forgot Password"),
       ),
       body: Center(
         child: Column(
@@ -65,21 +67,24 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             if (!isOtpSent)
               ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    isOtpSent = true;
-                  });
+                  setState(
+                    () {
+                      isOtpSent = true;
+                    },
+                  );
                 },
-                child: Text("Send OTP"),
+                child: const Text("Send OTP"),
               ),
             if (isOtpSent)
               Column(
                 children: [
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   PinCodeTextField(
                     appContext: context,
                     length: 6,
-                    focusNode: otpFocusNode, // Attach the focus node
-                    pastedTextStyle: TextStyle(
+                    focusNode: otpFocusNode,
+                    // Attach the focus node
+                    pastedTextStyle: const TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.bold,
                     ),
@@ -100,38 +105,42 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       setState(() {
                         otpText = value;
                         showError = false; // Hide error while typing
+                        isButtonClicked = false;
                       });
                     },
                     controller: TextEditingController(text: otpText),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: verifyOTP, // Call the verifyOTP function
                     style: ElevatedButton.styleFrom(
-                      primary: isButtonClicked
-                          ? isOTPValid
-                              ? Colors.green
-                              : Colors.red
+                      backgroundColor: isButtonClicked
+                          ? (otpText.length == 6)
+                              ? (isOTPValid ? Colors.green : Colors.red)
+                              : Colors.blue
                           : Colors.blue,
                     ),
-                    child: Text(
+                    child: const Text(
                       "Verify OTP",
                       style: TextStyle(
                         color: Colors.white,
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   isButtonClicked == true
                       ? Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: otpText.isNotEmpty
-                              ? Container(
+                          child: (otpText.length != 6)
+                              ? const SizedBox(
+                                  child: Text('Please fill the otp first!'),
+                                )
+                              : Container(
                                   decoration: BoxDecoration(
                                     color: Colors.red.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(5),
                                   ),
-                                  padding: EdgeInsets.all(8),
+                                  padding: const EdgeInsets.all(8),
                                   child: Text(
                                     showError
                                         ? "Invalid OTP. Please try again."
@@ -142,10 +151,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                )
-                              : SizedBox(),
+                                ),
                         )
-                      : SizedBox(),
+                      : const SizedBox(),
                 ],
               ),
           ],
